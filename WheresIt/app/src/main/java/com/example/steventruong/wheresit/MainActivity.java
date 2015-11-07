@@ -11,6 +11,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //onCreate when app starts.
         super.onCreate(savedInstanceState);
 
         //  App ID & App Token can be taken from App section of Estimote Cloud.
