@@ -26,6 +26,9 @@ dependencies {
 
     // Pebble Kit Setup
     compile 'com.getpebble:pebblekit:3.0.0'
+
+    //estimote sdk
+    compile 'com.estimote:sdk:0.9.4@aar'
 }
 
 repositories {

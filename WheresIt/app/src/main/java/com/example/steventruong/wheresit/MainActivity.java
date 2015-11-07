@@ -5,11 +5,19 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.estimote.sdk.EstimoteSDK;
+
 public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //  App ID & App Token can be taken from App section of Estimote Cloud.
+        EstimoteSDK.initialize(getApplicationContext(), "APPID", "APPTOKEN");
+        // Optional, debug logging.
+        EstimoteSDK.enableDebugLogging(true);
+
         setContentView(R.layout.activity_main);
     }
 
