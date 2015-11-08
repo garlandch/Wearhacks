@@ -42,19 +42,6 @@ public class ItemArrayAdapter extends ArrayAdapter<Nearable> {
             textView.setText("Bag");
         }
 
-        // Change icon based on name
-//        String s = values[position];
-//
-//        System.out.println(s);
-//
-//        if (s.equals("Bag")) {
-//            imageView.setImageResource(R.drawable.bag);
-//        } else if (s.equals("Bike")) {
-//            imageView.setImageResource(R.drawable.bike);
-//        } else {//Computer
-//            imageView.setImageResource(R.drawable.computer);
-//        }
-
         return rowView;
     }
 }

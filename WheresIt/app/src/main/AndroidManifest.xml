@@ -28,7 +28,6 @@
         <activity
             android:name=".ListItemActivity"
             android:label="Your Stuff"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 

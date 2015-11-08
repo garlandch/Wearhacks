@@ -13,6 +13,7 @@ import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.EstimoteSDK;
 import com.estimote.sdk.Nearable;
 import com.estimote.sdk.Region;
+import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public class ListItemActivity extends ActionBarActivity {
     private ListView mItems;
     private ItemArrayAdapter mAdapter;
 
+    private Firebase rootRef;
     private BeaconManager mBeaconManager;
     private List<Nearable> mNearables;
 
@@ -35,6 +37,10 @@ public class ListItemActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Firebase rootref
+        rootRef.setAndroidContext(this);
+        rootRef = new Firebase("https://burning-torch-6169.firebaseio.com/");
 
         //initialize SDK
         EstimoteSDK.initialize(getApplicationContext(), APP_ID, APP_TOKEN);
@@ -59,24 +65,18 @@ public class ListItemActivity extends ActionBarActivity {
         //final Region bag = new Region("Bag", UUID.fromString("d0d3fa86-ca76-45ec-9bd9-6af4792aca5a"), 38840, 61326);
         //final Region bike = new Region("Bike", UUID.fromString("d0d3fa86-ca76-45ec-9bd9-6af4d1ebb1b1"), 30629, 54712 );
 
-        mBeaconManager.setNearableListener(new BeaconManager.NearableListener() {
-            @Override
-            public void onNearablesDiscovered(List<Nearable> list) {
-                if (mNearables.size() != list.size()) {
-                    mNearables = list;
-                    mAdapter.clear();
-                    mAdapter.addAll(list);
-                    mAdapter.notifyDataSetChanged();
-                }
-
-                Log.d("TEST", "msize" + list.size());
-            }
-        });
 
         mBeaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
-                myToolbar.setTitle("Garage");
+                if (list.size() > 0 && list.get(0).getProximityUUID().equals("b9407f30-f5f8-466e-aff9-25556b57fe6d"))
+                {
+                    myToolbar.setTitle("Living Room");
+                }
+                else
+                {
+                    myToolbar.setTitle("Garage");
+                }
                 //mNearables.clear();
             }
 
@@ -87,11 +87,16 @@ public class ListItemActivity extends ActionBarActivity {
             }
         });
 
-        mBeaconManager.setRangingListener(new BeaconManager.RangingListener() {
+        mBeaconManager.setNearableListener(new BeaconManager.NearableListener() {
             @Override
-            public void onBeaconsDiscovered(Region region, List<Beacon> list) {
-                //Toast.makeText(getApplicationContext(), "Fouund something!", Toast.LENGTH_SHORT).show();
-
+            public void onNearablesDiscovered(List<Nearable> list) {
+                if (mNearables.size() != list.size()) {
+                    mNearables = list;
+                    mAdapter.clear();
+                    mAdapter.addAll(list);
+                    mAdapter.notifyDataSetChanged();
+                    rootRef.child(myToolbar.getTitle().toString()).setValue(list);
+                }
             }
         });
 
@@ -106,7 +111,7 @@ public class ListItemActivity extends ActionBarActivity {
 
         //mBeaconManager.startNearableDiscovery();
 
-        myToolbar.setBackgroundColor(Color.rgb(255, 204, 0));
+        myToolbar.setBackgroundColor(Color.rgb(255,255,255));
         setTitle("Living Room");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
