@@ -22,7 +22,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
@@ -33,7 +41,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private static final UUID APP_UUID = UUID.fromString("379e58e4-fa62-4418-b3f6-05c3392ba1bd");
     private PebbleKit.PebbleDataReceiver mDataReceiver;
     private String mVoiceQuery;
-
+    private Firebase rootRef;
+    private HashMap<String,Integer> roomMapper;
+    public static int resultRoom = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //onCreate when app starts.
@@ -41,7 +51,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
 
-        mainBtn = (ImageButton) findViewById(R.id.mainButton);
+        rootRef.setAndroidContext(this);
+        rootRef = new Firebase("https://sweltering-inferno-8588.firebaseio.com/");
+        roomMapper = new HashMap<String,Integer>();
+        roomMapper.put("Entrance",0);
+        roomMapper.put("Hack Room", 1);
+
+        mainBtn = (Button) findViewById(R.id.mainButton);
         mainBtn.setOnClickListener(this);
 
         mainTxtView = (TextView) findViewById(R.id.main_text_view);
@@ -111,6 +127,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
+    public static void setResultRoom(int i) {
+        resultRoom = i;
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -132,8 +151,30 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     if (mVoiceQuery != null)
                     {
                         // TODO: Search for item and return location
+                        int resultRoom  = 0;
+
+                        rootRef.child("rooms").addValueEventListener( new ValueEventListener(){
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                Iterable<DataSnapshot> iteratable = snapshot.getChildren();
+                                Iterator iterator = iteratable.iterator();
+                                while (iterator.hasNext())
+                                {
+                                    DataSnapshot response = (DataSnapshot)iterator.next();
+                                    ArrayList<String> test = (ArrayList) response.getValue();
+                                    for (String s: test) {
+                                        if(s.equals(mVoiceQuery))
+                                        {
+                                            MainActivity.setResultRoom(roomMapper.get(response.getKey()));
+                                        }
+                                    }
+                                }
+                            }
+                            @Override public void onCancelled(FirebaseError error) { }
+                        });
+
                         PebbleDictionary resultDict = new PebbleDictionary();
-                        resultDict.addInt32(Keys.KEY_RESULT, Keys.RESULT_ROOM1); // Replace room1 with actual key
+                        resultDict.addInt32(Keys.KEY_RESULT, MainActivity.resultRoom); // Replace room1 with actual key
                         PebbleKit.sendDataToPebble(getApplicationContext(), APP_UUID, resultDict);
 
                         // Reset string
@@ -150,7 +191,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     {
         // Register to get updates from Pebble
         final Handler handler = new Handler();
-        Log.d("Test2", "TESTPRINT");
         PebbleKit.registerReceivedDataHandler(this, new PebbleKit.PebbleDataReceiver(APP_UUID) {
             @Override
             public void receiveData(final Context context, final int transactionId, final PebbleDictionary data) {
@@ -163,11 +203,24 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
                 // Did the user request a voice search?
                 mVoiceQuery = data.getString(Keys.KEY_RESULT);
-                if (mVoiceQuery != null)
-                {
-                    Log.d("Test22", mVoiceQuery);
-
+                if (mVoiceQuery != null) {
                     // TODO: Search for item and return location
+                    Firebase ref = new Firebase("https://sweltering-inferno-8588.firebaseio.com/");
+                    ref.child("rooms").addValueEventListener( new ValueEventListener(){
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            Iterable<DataSnapshot> iteratable = snapshot.getChildren();
+                            Iterator iterator = iteratable.iterator();
+                            while (iterator.hasNext())
+                            {
+                                Object response = iterator.next();
+                                Log.d("test", response.toString());
+                            }
+                        }
+                        @Override public void onCancelled(FirebaseError error) { }
+                    });
+
+
                     PebbleDictionary resultDict = new PebbleDictionary();
                     resultDict.addInt32(Keys.KEY_RESULT, Keys.RESULT_ROOM1); // Replace room1 with actual key
                     PebbleKit.sendDataToPebble(getApplicationContext(), APP_UUID, resultDict);
