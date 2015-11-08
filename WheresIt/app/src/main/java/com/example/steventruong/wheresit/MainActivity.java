@@ -59,7 +59,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            
+
         }
 
         return super.onOptionsItemSelected(item);
