@@ -31,7 +31,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         myToolbar.setTitleTextColor(Color.rgb(255, 255, 255));
         myToolbar.setSubtitleTextColor(Color.rgb(255, 255, 255));
 
-        setTitle("WearsIt");
+        setTitle("WheresIt");
     }
 
     @Override
@@ -65,6 +65,5 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         return super.onOptionsItemSelected(item);
     }
-
 
 }

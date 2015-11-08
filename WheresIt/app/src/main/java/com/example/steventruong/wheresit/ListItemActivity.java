@@ -128,5 +128,4 @@ public class ListItemActivity extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }

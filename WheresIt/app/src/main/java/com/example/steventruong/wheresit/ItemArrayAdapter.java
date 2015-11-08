@@ -16,6 +16,7 @@ public class ItemArrayAdapter extends ArrayAdapter<Nearable> {
 
     public final static String BIKE = "7c420af88b16a0a6";
     public final static String BAG = "792aca5aef8e97b8";
+    public final static String COMPUTER = "71a8aeb13c06db7c";
 
     private final Context context;
     private List<Nearable> values;
@@ -40,6 +41,11 @@ public class ItemArrayAdapter extends ArrayAdapter<Nearable> {
         } else if(getItem(position).identifier.equals(BAG)) {
             imageView.setImageResource(R.drawable.bag);
             textView.setText("Bag");
+        } else if(getItem(position).identifier.equals(COMPUTER)) {
+            imageView.setImageResource(R.drawable.computer);
+            textView.setText("Bag");
+        } else {
+            textView.setText("Unidentified");
         }
 
         return rowView;
