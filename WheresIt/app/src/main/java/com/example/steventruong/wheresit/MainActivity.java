@@ -28,9 +28,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setSupportActionBar(myToolbar);
 
         myToolbar.setBackgroundColor(Color.rgb(255, 204, 0));
-        setTitle("WearsIt");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        myToolbar.setTitleTextColor(Color.rgb(255, 255, 255));
+        myToolbar.setSubtitleTextColor(Color.rgb(255,255,255));
 
+        setTitle("WearsIt");
     }
 
     @Override
@@ -58,7 +59,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_pebble) {
 
         }
 
