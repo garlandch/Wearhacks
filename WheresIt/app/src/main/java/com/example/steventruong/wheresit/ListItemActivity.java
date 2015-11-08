@@ -1,9 +1,11 @@
 package com.example.steventruong.wheresit;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.estimote.sdk.Beacon;
@@ -28,7 +30,7 @@ public class ListItemActivity extends ActionBarActivity {
 
 
     static final String[] ITEM =
-            new String[] { "Car" , "Keys"};
+            new String[] { "Bag" , "Bike", "Computer"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,10 +62,13 @@ public class ListItemActivity extends ActionBarActivity {
         mBeaconManager.setNearableListener(new BeaconManager.NearableListener() {
             @Override
             public void onNearablesDiscovered(List<Nearable> list) {
-                if(mNearables.size() != list.size()) {
+                if (mNearables.size() != list.size()) {
                     mNearables = list;
+                    mAdapter.clear();
+                    mAdapter.addAll(list);
+                    mAdapter.notifyDataSetChanged();
                 }
-                mAdapter.notifyDataSetChanged();
+
                 Log.d("TEST", "msize" + list.size());
             }
         });
@@ -71,7 +76,7 @@ public class ListItemActivity extends ActionBarActivity {
         mBeaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
-                myToolbar.setTitle("Living Room");
+                myToolbar.setTitle("Garage");
                 //mNearables.clear();
             }
 
@@ -101,7 +106,22 @@ public class ListItemActivity extends ActionBarActivity {
 
         //mBeaconManager.startNearableDiscovery();
 
+        myToolbar.setBackgroundColor(Color.rgb(255, 204, 0));
+        setTitle("Living Room");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; goto parent activity.
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

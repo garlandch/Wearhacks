@@ -36,10 +36,12 @@ public class ItemArrayAdapter extends ArrayAdapter<Nearable> {
 //
 //        System.out.println(s);
 //
-//        if (s.equals("Car")) {
-//            imageView.setImageResource(R.drawable.car);
-//        } else if (s.equals("Keys")) {
-//            imageView.setImageResource(R.drawable.key);
+//        if (s.equals("Bag")) {
+//            imageView.setImageResource(R.drawable.bag);
+//        } else if (s.equals("Bike")) {
+//            imageView.setImageResource(R.drawable.bike);
+//        } else {//Computer
+//            imageView.setImageResource(R.drawable.computer);
 //        }
 
         return rowView;
