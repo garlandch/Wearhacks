@@ -44,9 +44,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setSupportActionBar(myToolbar);
 
         myToolbar.setBackgroundColor(Color.rgb(255, 204, 0));
-        setTitle("WearsIt");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        myToolbar.setTitleTextColor(Color.rgb(255, 255, 255));
+        myToolbar.setSubtitleTextColor(Color.rgb(255,255,255));
 
+        setTitle("WearsIt");
     }
 
     @Override
