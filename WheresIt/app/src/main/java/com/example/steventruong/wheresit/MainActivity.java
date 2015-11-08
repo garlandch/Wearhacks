@@ -27,9 +27,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.main_tool_bar);
         setSupportActionBar(myToolbar);
 
-        myToolbar.setBackgroundColor(Color.rgb(44, 133,142));
+        myToolbar.setBackgroundColor(Color.rgb(44, 133, 142));
         myToolbar.setTitleTextColor(Color.rgb(255, 255, 255));
-        myToolbar.setSubtitleTextColor(Color.rgb(255,255,255));
+        myToolbar.setSubtitleTextColor(Color.rgb(255, 255, 255));
 
         setTitle("WearsIt");
     }
