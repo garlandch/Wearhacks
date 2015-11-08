@@ -17,6 +17,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 dependencies {
@@ -29,6 +34,8 @@ dependencies {
 
     //estimote sdk
     compile 'com.estimote:sdk:0.9.4@aar'
+
+    compile 'com.firebase:firebase-client-android:2.4.0+'
 }
 
 repositories {
