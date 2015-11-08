@@ -27,7 +27,8 @@
 
         <activity
             android:name=".ListItemActivity"
-            android:label="Your Stuff" >
+            android:label="Your Stuff"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
     </application>
