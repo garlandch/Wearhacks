@@ -57,7 +57,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         roomMapper.put("Entrance",0);
         roomMapper.put("Hack Room", 1);
 
-        mainBtn = (Button) findViewById(R.id.mainButton);
+        mainBtn = (ImageButton) findViewById(R.id.mainButton);
         mainBtn.setOnClickListener(this);
 
         mainTxtView = (TextView) findViewById(R.id.main_text_view);
