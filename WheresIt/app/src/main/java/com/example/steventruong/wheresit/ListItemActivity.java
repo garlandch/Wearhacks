@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.estimote.sdk.Beacon;
@@ -129,7 +130,7 @@ public class ListItemActivity extends ActionBarActivity {
         //mBeaconManager.startNearableDiscovery();
 
         myToolbar.setBackgroundColor(Color.rgb(255,255,255));
-        setTitle("Living Room");
+        setTitle("Searching...");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
