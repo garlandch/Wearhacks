@@ -12,7 +12,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,7 +28,8 @@ import com.getpebble.android.kit.util.PebbleDictionary;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener
 {
-    private Button mainBtn;
+    private ImageButton mainBtn;
+    private TextView mainTxtView;
     private static final UUID APP_UUID = UUID.fromString("379e58e4-fa62-4418-b3f6-05c3392ba1bd");
     private PebbleKit.PebbleDataReceiver mDataReceiver;
     private String mVoiceQuery;
@@ -36,8 +41,52 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
 
-        mainBtn = (Button) findViewById(R.id.mainButton);
+        mainBtn = (ImageButton) findViewById(R.id.mainButton);
         mainBtn.setOnClickListener(this);
+
+        mainTxtView = (TextView) findViewById(R.id.main_text_view);
+
+        final Animation in = new AlphaAnimation(0.0f, 1.0f);
+        in.setDuration(1000);
+
+        final Animation out = new AlphaAnimation(1.0f, 0.0f);
+        out.setDuration(1000);
+
+        out.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mainTxtView.startAnimation(in);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+        });
+
+        in.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mainTxtView.startAnimation(out);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+        });
 
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.main_tool_bar);
         setSupportActionBar(myToolbar);
@@ -48,6 +97,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         setupPebbleReceiver();
         setTitle("WheresIt");
+
+        mainTxtView.startAnimation(in);
     }
 
     @Override
