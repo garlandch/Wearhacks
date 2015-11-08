@@ -1,8 +1,10 @@
 package com.example.steventruong.wheresit;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +23,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         mainBtn = (Button) findViewById(R.id.mainButton);
         mainBtn.setOnClickListener(this);
+
+        final Toolbar myToolbar = (Toolbar) findViewById(R.id.main_tool_bar);
+        setSupportActionBar(myToolbar);
+
+        myToolbar.setBackgroundColor(Color.rgb(255, 204, 0));
+        setTitle("WearsIt");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
     @Override
@@ -49,7 +59,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            
         }
 
         return super.onOptionsItemSelected(item);
