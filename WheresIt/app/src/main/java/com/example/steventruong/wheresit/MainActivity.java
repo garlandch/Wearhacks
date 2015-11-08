@@ -25,7 +25,7 @@ import com.getpebble.android.kit.util.PebbleDictionary;
 public class MainActivity extends ActionBarActivity implements View.OnClickListener
 {
     private Button mainBtn;
-    private static final UUID APP_UUID = UUID.fromString("af17efe7-2141-4eb2-b62a-19fc1b595595");
+    private static final UUID APP_UUID = UUID.fromString("379e58e4-fa62-4418-b3f6-05c3392ba1bd");
     private PebbleKit.PebbleDataReceiver mDataReceiver;
     private String mVoiceQuery;
 
@@ -46,9 +46,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         myToolbar.setTitleTextColor(Color.rgb(255, 255, 255));
         myToolbar.setSubtitleTextColor(Color.rgb(255, 255, 255));
 
-        Log.d("Test2", "ONCREATE");
         setupPebbleReceiver();
-        setTitle("WearsIt");
+        setTitle("WheresIt");
     }
 
     @Override
@@ -71,22 +70,24 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             mDataReceiver = new PebbleKit.PebbleDataReceiver(APP_UUID) {
 
                 @Override
-                public void receiveData(Context context, int transactionId, PebbleDictionary dict) {
+                public void receiveData(Context context, int transactionId, PebbleDictionary dict)
+                {
                     // Always ACK
+                    Log.d("test", "Got message from Pebble!");
                     PebbleKit.sendAckToPebble(context, transactionId);
-                    Log.i("receiveData", "Got message from Pebble!");
 
-                    mVoiceQuery = dict.getString(Keys.KEY_RESULT);
+                    // the string dictated by the user from the pebble app
+                    mVoiceQuery = dict.getString(Keys.KEY_CHOICE);
+                    if (mVoiceQuery != null)
+                    {
+                        // TODO: Search for item and return location
+                        PebbleDictionary resultDict = new PebbleDictionary();
+                        resultDict.addInt32(Keys.KEY_RESULT, Keys.RESULT_ROOM1); // Replace room1 with actual key
+                        PebbleKit.sendDataToPebble(getApplicationContext(), APP_UUID, resultDict);
 
-                    Log.d("Test", mVoiceQuery);
-
-                    // TODO: Search for item and return location
-                    PebbleDictionary resultDict = new PebbleDictionary();
-                    resultDict.addInt32(Keys.KEY_RESULT, Keys.RESULT_ROOM1); // Replace room1 with actual key
-                    PebbleKit.sendDataToPebble(getApplicationContext(), APP_UUID, resultDict);
-
-                    // Reset string
-                    mVoiceQuery = "";
+                        // Reset string
+                        mVoiceQuery = "";
+                    }
                 }
 
             };
@@ -101,8 +102,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Log.d("Test2", "TESTPRINT");
         PebbleKit.registerReceivedDataHandler(this, new PebbleKit.PebbleDataReceiver(APP_UUID) {
             @Override
-            public void receiveData(final Context context, final int transactionId, final PebbleDictionary data)
-            {
+            public void receiveData(final Context context, final int transactionId, final PebbleDictionary data) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -110,13 +110,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     }
                 });
 
-                Log.d("Test", "Received Data");
                 // Did the user request a voice search?
-                if (data.getInteger(Keys.KEY_CHOICE) != null)
+                mVoiceQuery = data.getString(Keys.KEY_RESULT);
+                if (mVoiceQuery != null)
                 {
-                    mVoiceQuery = data.getString(Keys.KEY_RESULT);
-
-                    Log.d("Test", mVoiceQuery);
+                    Log.d("Test22", mVoiceQuery);
 
                     // TODO: Search for item and return location
                     PebbleDictionary resultDict = new PebbleDictionary();
