@@ -13,6 +13,10 @@ import com.estimote.sdk.Nearable;
 import java.util.List;
 
 public class ItemArrayAdapter extends ArrayAdapter<Nearable> {
+
+    public final static String BIKE = "7c420af88b16a0a6";
+    public final static String BAG = "792aca5aef8e97b8";
+
     private final Context context;
     private List<Nearable> values;
 
@@ -29,7 +33,14 @@ public class ItemArrayAdapter extends ArrayAdapter<Nearable> {
         View rowView = inflater.inflate(R.layout.list_item, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.label);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.logo);
-        textView.setText(getItem(position).identifier);
+
+        if(getItem(position).identifier.equals(BIKE)) {
+            imageView.setImageResource(R.drawable.bike);
+            textView.setText("Bike");
+        } else if(getItem(position).identifier.equals(BAG)) {
+            imageView.setImageResource(R.drawable.bag);
+            textView.setText("Bag");
+        }
 
         // Change icon based on name
 //        String s = values[position];
