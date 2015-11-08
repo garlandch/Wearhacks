@@ -106,7 +106,7 @@ public class ListItemActivity extends ActionBarActivity {
 
         //mBeaconManager.startNearableDiscovery();
 
-        myToolbar.setBackgroundColor(Color.rgb(255, 204, 0));
+        myToolbar.setBackgroundColor(Color.rgb(255,255,255));
         setTitle("Living Room");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
