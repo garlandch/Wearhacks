@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity"
-    android:weightSum=".5"
     android:background="@drawable/background_gradient">
 
     <android.support.v7.widget.Toolbar
@@ -17,25 +16,25 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         />
 
+        <ImageButton
+            android:id="@+id/mainButton"
+            android:src="@drawable/big_watch"
+            android:layout_height="225dp"
+            android:layout_width="225dp"
+            android:layout_centerInParent="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleType="fitXY"
+            />
 
-    <ImageView
-        android:src="@drawable/ic_watch_launcher"
-        android:layout_height="0dp"
-        android:layout_width="200dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.4"
-        />
+        <TextView
+            android:id="@+id/main_text_view"
+            android:layout_marginTop="25dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Touch the watch to find your stuff."
+            android:textSize="20sp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/mainButton" />
 
-    <Button
-        android:id="@+id/mainButton"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:background="@drawable/rounded_button_shape"
-        android:text="@string/find_my_stuff"
-        android:textColor="#FFFFFF"
-        android:textSize="25sp"
-        android:padding="5dp"
-        android:layout_gravity="center_horizontal"
-        />
-
-</LinearLayout>
+</RelativeLayout>
