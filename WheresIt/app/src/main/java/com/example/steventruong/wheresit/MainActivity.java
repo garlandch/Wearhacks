@@ -8,29 +8,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.estimote.sdk.EstimoteSDK;
+public class MainActivity extends ActionBarActivity implements View.OnClickListener{
 
-public class MainActivity extends ActionBarActivity {
+    private Button mainBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //onCreate when app starts.
         super.onCreate(savedInstanceState);
 
-        //  App ID & App Token can be taken from App section of Estimote Cloud.
-        EstimoteSDK.initialize(getApplicationContext(), "APPID", "APPTOKEN");
-        // Optional, debug logging.
-        EstimoteSDK.enableDebugLogging(true);
-
         setContentView(R.layout.activity_main);
 
-        final Button button = (Button) findViewById(R.id.mainButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        mainBtn = (Button) findViewById(R.id.mainButton);
+        mainBtn.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.mainButton:
                 Intent i = new Intent(getApplicationContext(), ListItemActivity.class);
                 startActivity(i);
-            }
-        });
+                break;
+        }
     }
 
     @Override
@@ -54,4 +54,6 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
