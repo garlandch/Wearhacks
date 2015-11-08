@@ -1,18 +1,33 @@
 package com.example.steventruong.wheresit;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
+import com.getpebble.android.kit.PebbleKit;
+import com.getpebble.android.kit.util.PebbleDictionary;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener{
-
+public class MainActivity extends ActionBarActivity implements View.OnClickListener
+{
     private Button mainBtn;
+    private static final UUID APP_UUID = UUID.fromString("379e58e4-fa62-4418-b3f6-05c3392ba1bd");
+    private PebbleKit.PebbleDataReceiver mDataReceiver;
+    private String mVoiceQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +46,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         myToolbar.setTitleTextColor(Color.rgb(255, 255, 255));
         myToolbar.setSubtitleTextColor(Color.rgb(255, 255, 255));
 
+        setupPebbleReceiver();
         setTitle("WheresIt");
     }
 
@@ -42,6 +58,75 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivity(i);
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //setupPebbleReceiver();
+
+        if(mDataReceiver == null) {
+            mDataReceiver = new PebbleKit.PebbleDataReceiver(APP_UUID) {
+
+                @Override
+                public void receiveData(Context context, int transactionId, PebbleDictionary dict)
+                {
+                    // Always ACK
+                    Log.d("test", "Got message from Pebble!");
+                    PebbleKit.sendAckToPebble(context, transactionId);
+
+                    // the string dictated by the user from the pebble app
+                    mVoiceQuery = dict.getString(Keys.KEY_CHOICE);
+                    if (mVoiceQuery != null)
+                    {
+                        // TODO: Search for item and return location
+                        PebbleDictionary resultDict = new PebbleDictionary();
+                        resultDict.addInt32(Keys.KEY_RESULT, Keys.RESULT_ROOM1); // Replace room1 with actual key
+                        PebbleKit.sendDataToPebble(getApplicationContext(), APP_UUID, resultDict);
+
+                        // Reset string
+                        mVoiceQuery = "";
+                    }
+                }
+
+            };
+            PebbleKit.registerReceivedDataHandler(getApplicationContext(), mDataReceiver);
+        }
+    }
+
+    public void setupPebbleReceiver()
+    {
+        // Register to get updates from Pebble
+        final Handler handler = new Handler();
+        Log.d("Test2", "TESTPRINT");
+        PebbleKit.registerReceivedDataHandler(this, new PebbleKit.PebbleDataReceiver(APP_UUID) {
+            @Override
+            public void receiveData(final Context context, final int transactionId, final PebbleDictionary data) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                    /* Update your UI here. */
+                    }
+                });
+
+                // Did the user request a voice search?
+                mVoiceQuery = data.getString(Keys.KEY_RESULT);
+                if (mVoiceQuery != null)
+                {
+                    Log.d("Test22", mVoiceQuery);
+
+                    // TODO: Search for item and return location
+                    PebbleDictionary resultDict = new PebbleDictionary();
+                    resultDict.addInt32(Keys.KEY_RESULT, Keys.RESULT_ROOM1); // Replace room1 with actual key
+                    PebbleKit.sendDataToPebble(getApplicationContext(), APP_UUID, resultDict);
+
+                    // Reset string
+                    mVoiceQuery = "";
+                }
+                PebbleKit.sendAckToPebble(getApplicationContext(), transactionId);
+            }
+        });
     }
 
     @Override
@@ -59,11 +144,35 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_pebble) {
-
+        if (id == R.id.action_pebble)
+        {
+            sideloadInstall(getApplicationContext(), "Where's_It.pbw");
         }
-
         return super.onOptionsItemSelected(item);
     }
+    /**
+     * Alternative sideloading method
+     * Source: http://forums.getpebble.com/discussion/comment/103733/#Comment_103733
+     */
+    public static void sideloadInstall(Context ctx, String assetFilename) {
+        try {
+            // Read .pbw from assets
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            File file = new File(ctx.getExternalFilesDir(null), assetFilename);
+            InputStream is = ctx.getResources().getAssets().open(assetFilename);
+            OutputStream os = new FileOutputStream(file);
+            byte[] pbw = new byte[is.available()];
+            is.read(pbw);
+            os.write(pbw);
+            is.close();
+            os.close();
 
+            // Install via Pebble Android app
+            intent.setDataAndType(Uri.fromFile(file), "application/pbw");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ctx.startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(ctx, "App install failed: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
 }
