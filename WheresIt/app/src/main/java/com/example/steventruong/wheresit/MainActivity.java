@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,12 +22,9 @@ import java.util.UUID;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener{
-
-
-
+public class MainActivity extends ActionBarActivity implements View.OnClickListener
+{
     private Button mainBtn;
-
     private static final UUID APP_UUID = UUID.fromString("af17efe7-2141-4eb2-b62a-19fc1b595595");
     private PebbleKit.PebbleDataReceiver mDataReceiver;
     private String mVoiceQuery;
@@ -45,8 +44,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         myToolbar.setBackgroundColor(Color.rgb(255, 204, 0));
         myToolbar.setTitleTextColor(Color.rgb(255, 255, 255));
-        myToolbar.setSubtitleTextColor(Color.rgb(255,255,255));
+        myToolbar.setSubtitleTextColor(Color.rgb(255, 255, 255));
 
+        Log.d("Test2", "ONCREATE");
+        setupPebbleReceiver();
         setTitle("WearsIt");
     }
 
@@ -64,7 +65,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 
-        // Register to get updates from Pebble
+        //setupPebbleReceiver();
+
         if(mDataReceiver == null) {
             mDataReceiver = new PebbleKit.PebbleDataReceiver(APP_UUID) {
 
@@ -72,19 +74,61 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 public void receiveData(Context context, int transactionId, PebbleDictionary dict) {
                     // Always ACK
                     PebbleKit.sendAckToPebble(context, transactionId);
+                    Log.i("receiveData", "Got message from Pebble!");
 
-                    // Did the user request a voice search?
-                    if( dict.getInteger(Keys.KEY_CHOICE) != null )
-                    {
-                        mVoiceQuery = dict.getString(Keys.KEY_RESULT);
+                    mVoiceQuery = dict.getString(Keys.KEY_RESULT);
 
-                        // TODO: Search for item and return location
-                    }
+                    Log.d("Test", mVoiceQuery);
+
+                    // TODO: Search for item and return location
+                    PebbleDictionary resultDict = new PebbleDictionary();
+                    resultDict.addInt32(Keys.KEY_RESULT, Keys.RESULT_ROOM1); // Replace room1 with actual key
+                    PebbleKit.sendDataToPebble(getApplicationContext(), APP_UUID, resultDict);
+
+                    // Reset string
+                    mVoiceQuery = "";
                 }
 
             };
             PebbleKit.registerReceivedDataHandler(getApplicationContext(), mDataReceiver);
         }
+    }
+
+    public void setupPebbleReceiver()
+    {
+        // Register to get updates from Pebble
+        final Handler handler = new Handler();
+        Log.d("Test2", "TESTPRINT");
+        PebbleKit.registerReceivedDataHandler(this, new PebbleKit.PebbleDataReceiver(APP_UUID) {
+            @Override
+            public void receiveData(final Context context, final int transactionId, final PebbleDictionary data)
+            {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                    /* Update your UI here. */
+                    }
+                });
+
+                Log.d("Test", "Received Data");
+                // Did the user request a voice search?
+                if (data.getInteger(Keys.KEY_CHOICE) != null)
+                {
+                    mVoiceQuery = data.getString(Keys.KEY_RESULT);
+
+                    Log.d("Test", mVoiceQuery);
+
+                    // TODO: Search for item and return location
+                    PebbleDictionary resultDict = new PebbleDictionary();
+                    resultDict.addInt32(Keys.KEY_RESULT, Keys.RESULT_ROOM1); // Replace room1 with actual key
+                    PebbleKit.sendDataToPebble(getApplicationContext(), APP_UUID, resultDict);
+
+                    // Reset string
+                    mVoiceQuery = "";
+                }
+                PebbleKit.sendAckToPebble(getApplicationContext(), transactionId);
+            }
+        });
     }
 
     @Override
